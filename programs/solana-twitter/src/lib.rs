@@ -1,11 +1,13 @@
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::system_program;
+//use anchor_lang::solana_program::system_program;
+
 declare_id!("F4MpghVxRA1hu6aot5NAwdmLFK2zQnArNwPYnuKMStep");
 
 #[program]
 pub mod solana_twitter {
     use super::*;
     pub fn send_tweet(ctx: Context<SendTweet>, topic: String, content: String) -> ProgramResult {
+    //pub fn send_tweet(ctx: Context<SendTweet>, topic: String, content: String) -> Result<()> {
         let tweet: &mut Account<Tweet> = &mut ctx.accounts.tweet;
         let author: &Signer = &ctx.accounts.author;
         let clock: Clock = Clock::get().unwrap();
@@ -32,8 +34,9 @@ pub struct SendTweet<'info> {
     pub tweet: Account<'info, Tweet>,
     #[account(mut)]
     pub author: Signer<'info>,
-    #[account(address = system_program::ID)]
-    pub system_program: AccountInfo<'info>,
+    //#[account(address = system_program::ID)]
+    //pub system_program: AccountInfo<'info>,
+    pub system_program: Program<'info, System>,
 }
 
 #[account]
@@ -59,7 +62,8 @@ impl Tweet {
         + STRING_LENGTH_PREFIX + MAX_CONTENT_LENGTH; 
 }
 
-#[error_code]
+#[error]
+//#[error_code]
 pub enum ErrorCode {
     #[msg("The provided topic should be 50 characters long maximum.")]
     TopicTooLong,
